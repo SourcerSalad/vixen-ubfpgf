@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GunScript : MonoBehaviour
+public class GunScript_Conventional : MonoBehaviour
 {
 	[Header("Base Values")]
 	public float damage = 10f;
 	public float range = 100f;
 	[Tooltip("Lower values = tighter spread")]
 	public float accuracyFactor = 0.1f;
+	[Tooltip("If Hitscan")]
+	public float projectileSpeed = 200.0f;
+	public bool useHitscan = true;
 	public bool automatic = false;
 	[Tooltip("Rounds per second")]
 	public float fireRate = 15f;
@@ -28,36 +31,48 @@ public class GunScript : MonoBehaviour
 	public int clipSize = 8;
 	int currentAmmo;
 	int ammoReserve;
-	//public bool auto = false;
 	
+	//Internal vars
 	float nextTimeToFire = 0f;
 	Animator nmtr;
 	AudioSource fireSound;
 	Text cntr;
+	Text noAmmoTx;
 	
 	[Header("GameObjects")]
-	[Tooltip("Camera that represents player's perspective")]
-	public Camera playerCamera;
 	[Tooltip("Particle system to spawn on firing")]
 	public ParticleSystem muzzleFlash;
 	public GameObject impactGeneric;
 	public GameObject impactBlood;
-	[Tooltip("Text panel in HUD that displays ammunition count")]
-	public GameObject text;
+	[Header("Prefabs to use (If Use Hitscan true)")]
+	public Rigidbody projectile;
+	public Transform spawnpoint;
+	
+	Camera playerCamera;
+	GameObject ammoPanel;
+	GameObject noAmmo;
 	
 	void Start()
 	{
-		nmtr = GetComponent<Animator>();
-		fireSound = GetComponent<AudioSource>();
-		currentAmmo = clipSize;
-		ammoReserve = maxAmmoReserve;
-		cntr = text.GetComponent<Text>();
+		
 	}
 	
 	void OnEnable()
 	{
-		//print(transform);
+		playerCamera = transform.parent.parent.GetComponent<Camera>();
+		nmtr = GetComponent<Animator>();
+		fireSound = GetComponent<AudioSource>();
+		currentAmmo = clipSize;
+		ammoReserve = maxAmmoReserve;
+		ammoPanel = GameObject.Find("AmmoCount");
+		cntr = ammoPanel.GetComponent<Text>();
 		cntr.text = currentAmmo + "/" + clipSize + " | " + ammoReserve;
+		noAmmo = GameObject.Find("NoAmmo");
+		noAmmoTx = noAmmo.GetComponent<Text>();
+		if((currentAmmo + ammoReserve) >= 0.0f)
+		{
+			noAmmoTx.text = "";
+		}
 	}
 	// Update is called once per frame
 	void Update()
@@ -95,12 +110,35 @@ public class GunScript : MonoBehaviour
 		if(currentAmmo > 0)
 		{
 			muzzleFlash.Play();
-			nmtr.SetTrigger("shoot");
+			//nmtr.SetTrigger("shoot");
 			fireSound.Play();
 			currentAmmo -= 1;
 			Vector3 inaccuracy = new Vector3((Random.value - 0.5f) * accuracyFactor, (Random.value - 0.5f) * accuracyFactor, (Random.value - 0.5f) * accuracyFactor);
 			
-			RaycastHit hit;
+			if(useHitscan)
+			{
+				FireHitscan();
+			}
+			else
+			{
+				FireProjectile();
+			}
+		}
+		else if(currentAmmo <= 0 && ammoReserve > 0)
+		{
+			Reload();
+		}
+		else
+		{
+			noAmmoTx.text = "No Ammunition";
+			Invoke("Empty", 1.0f);
+		}
+	}
+	
+	void FireHitscan()
+	{
+		Vector3 inaccuracy = new Vector3((Random.value - 0.5f) * accuracyFactor, (Random.value - 0.5f) * accuracyFactor, (Random.value - 0.5f) * accuracyFactor);
+		RaycastHit hit;
 			if(Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward + inaccuracy, out hit, range))
 			{
 				EntityScript_NPC nttscp = hit.transform.GetComponent<EntityScript_NPC>();
@@ -124,11 +162,13 @@ public class GunScript : MonoBehaviour
 					Destroy(impactGO, 2f);
 				}
 			}
-		}
-		else
-		{
-			Reload();
-		}
+	}
+	
+	void FireProjectile()
+	{
+		Rigidbody clone;
+		clone = (Rigidbody)Instantiate(projectile, spawnpoint.position, spawnpoint.rotation);
+		clone.velocity = spawnpoint.TransformDirection(Vector3.forward*projectileSpeed);
 	}
 	
 	void Reload()
@@ -180,5 +220,10 @@ public class GunScript : MonoBehaviour
 					Destroy(impactGO, 2f);
 				}
 			}
+	}
+	
+	void Empty()
+	{
+		noAmmoTx.text = "";
 	}
 }

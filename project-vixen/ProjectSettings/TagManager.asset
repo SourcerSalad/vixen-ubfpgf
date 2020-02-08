@@ -8,6 +8,8 @@ TagManager:
   - Prop_dynamic
   - Prop_static
   - NPC
+  - Environ
+  - Wall_Generic
   layers:
   - Default
   - TransparentFX

@@ -12,29 +12,37 @@ public class EmptyScript : MonoBehaviour
 	
 	Animator nmtr;
 	Text cntr;
+	Text noWepTx;
 	
 	public Camera playerCamera;
 	public GameObject impactGeneric;
 	public GameObject impactBlood;
-	public GameObject ammoPanel;
-	public GameObject text;
+	
+	GameObject ammoPanel;
+	GameObject noWep;
 	
 	void Start()
 	{
 		nmtr = GetComponent<Animator>();
+		ammoPanel = GameObject.Find("AmmoCount");
 		cntr = ammoPanel.GetComponent<Text>();
+		noWep = GameObject.Find("NoWeapon");
 	}
 	
 	void OnEnable()
 	{
-		//print(transform);
+		ammoPanel = GameObject.Find("AmmoCount");
+		cntr = ammoPanel.GetComponent<Text>();
+		cntr.text = "No Weapon Selected";
+		noWep = GameObject.Find("NoWeapon");
+		noWepTx = noWep.GetComponent<Text>();
 	}
 	// Update is called once per frame
 	void Update()
 	{
 		if(Input.GetButtonDown("Fire1"))
 		{
-			text.gameObject.SetActive(true);
+			noWepTx.text = "No Weapon";
 			Invoke("Empty", 1.0f);
 		}
 		if(Input.GetButtonDown("Melee"))
@@ -42,17 +50,15 @@ public class EmptyScript : MonoBehaviour
 			nmtr.SetTrigger("melee");
 			Invoke("Melee", 0.2f);
 		}
-		cntr.text = "0/0	| 000";
 	}
 	
 	void Empty()
 	{
-		text.gameObject.SetActive(false);
+		noWepTx.text = "";
 	}
 	
 	void Melee()
 	{
-		print("wumpus");
 		RaycastHit meleeHit;
 			if(Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out meleeHit, meleeRange))
 			{
