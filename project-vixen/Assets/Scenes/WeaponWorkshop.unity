@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -219,6 +219,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2111895715}
     m_Modifications:
+    - target: {fileID: 685350315252735990, guid: 4992c719bf6e16f47b3bea800f59b706,
+        type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 9900daed5da5e8a4caaaf451ade75865, type: 3}
     - target: {fileID: 908555736637618549, guid: 4992c719bf6e16f47b3bea800f59b706,
         type: 3}
       propertyPath: m_Name
@@ -292,12 +297,17 @@ PrefabInstance:
     - target: {fileID: 6477762249084182617, guid: 4992c719bf6e16f47b3bea800f59b706,
         type: 3}
       propertyPath: fireRate
-      value: 16
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 6477762249084182617, guid: 4992c719bf6e16f47b3bea800f59b706,
         type: 3}
       propertyPath: clipSize
-      value: 999
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6477762249084182617, guid: 4992c719bf6e16f47b3bea800f59b706,
+        type: 3}
+      propertyPath: useHitscan
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4992c719bf6e16f47b3bea800f59b706, type: 3}
