@@ -44,6 +44,8 @@ public class GunScript_Conventional : MonoBehaviour
 	public ParticleSystem muzzleFlash;
 	public GameObject impactGeneric;
 	public GameObject impactBlood;
+	[Tooltip("Decals")]
+	public GameObject hole_Generic;
 	[Header("Prefabs to use (If Use Hitscan true)")]
 	public Rigidbody projectile;
 	public Transform spawnpoint;
@@ -159,6 +161,7 @@ public class GunScript_Conventional : MonoBehaviour
 				else
 				{
 					GameObject impactGO = Instantiate(impactGeneric, hit.point, Quaternion.LookRotation(hit.normal));
+					GameObject decalGO = Instantiate(hole_Generic, hit.point, Quaternion.LookRotation(hit.normal));
 					Destroy(impactGO, 2f);
 				}
 			}
@@ -177,7 +180,13 @@ public class GunScript_Conventional : MonoBehaviour
 			{
 				nextTimeToFire = Time.time + reloadTime;
 				nmtr.SetTrigger("reload");
-				if(currentAmmo == 0 && ammoReserve >= clipSize)
+				Invoke("AmmoChange", reloadTime);
+			}
+	}
+	
+	void AmmoChange()
+	{
+		if(currentAmmo == 0 && ammoReserve >= clipSize)
 				{
 					ammoReserve -= clipSize;
 					currentAmmo = clipSize;
@@ -196,7 +205,6 @@ public class GunScript_Conventional : MonoBehaviour
 						ammoReserve = 0;
 					}
 				}
-			}
 	}
 	
 	void Melee()

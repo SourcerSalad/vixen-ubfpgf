@@ -165,8 +165,8 @@ MonoBehaviour:
   range: 100
   accuracyFactor: 0.1
   projectileSpeed: 200
-  useHitscan: 0
-  automatic: 1
+  useHitscan: 1
+  automatic: 0
   fireRate: 4
   reloadTime: 2.2
   impactForce: 100
@@ -179,6 +179,8 @@ MonoBehaviour:
   impactGeneric: {fileID: 1531575832024723151, guid: 8a7e4e462f0e25c4ab124fc5952379fe,
     type: 3}
   impactBlood: {fileID: 3825707312689074814, guid: f9385c9d2a6c83b4bb0833d96f20542e,
+    type: 3}
+  hole_Generic: {fileID: 6850924601827139331, guid: 7a1a202bf6315b04f865e79de5004d86,
     type: 3}
   projectile: {fileID: 8929808206477174565, guid: 2ce03af499d5999439786af5b0114221,
     type: 3}

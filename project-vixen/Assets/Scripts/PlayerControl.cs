@@ -37,6 +37,8 @@ public class PlayerControl : MonoBehaviour
 	[Tooltip("How far to check for ladders and surfaces (for raycasts)")]
 	public float checkRadius = 0.3f;
 	
+	public GameObject footStep;
+	
 	//audio vars
 	
 	//component vars
@@ -50,6 +52,7 @@ public class PlayerControl : MonoBehaviour
 	bool isLadder;
 	float crouchHeight;
 	float nextTimeToThrow = 0f;
+	float nextTimeToStep = 0f;
 	bool hitDist;
 	bool hasLadder;
 	
@@ -75,6 +78,7 @@ public class PlayerControl : MonoBehaviour
     {
 		isLadder = CheckLadder();
 		WalkLogic();
+		FootStep();
 		JumpLogic();
 		CrouchLogic();
 		GrenadeLogic();
@@ -83,7 +87,7 @@ public class PlayerControl : MonoBehaviour
 	//movement methods
 	void WalkLogic()
 	{
-		 //axis vars
+		//axis vars
 		float hAxis = Input.GetAxis("Horizontal");
 		float vAxis = Input.GetAxis("Vertical");
 		bool shiftAxis = Input.GetButton("Walk");
@@ -99,7 +103,6 @@ public class PlayerControl : MonoBehaviour
 		float slowFactor = isSlow ? speedDrop : 1;
 		float climbFactor = isLadder ? climbSpeed : 0;
 		
-		
 		float movementFactor = walkSpeed * flyFactor * slowFactor;
 		
 		Vector3 movement = new Vector3(hAxis * movementFactor * sideDrop * Time.deltaTime, vAxis * climbFactor * Time.deltaTime, vAxis * movementFactor * rearFactor * Time.deltaTime);
@@ -107,6 +110,15 @@ public class PlayerControl : MonoBehaviour
 	   
 		rgdb.AddRelativeForce(movement, ForceMode.VelocityChange);
 		rgdb.MovePosition(newPos);
+		
+		float stepSpeed = isSlow ? 2.5f : 0f;
+		print(stepSpeed);
+		if(Time.time >= nextTimeToStep && (Mathf.Abs(vAxis) > 0 || Mathf.Abs(hAxis) > 0))
+		{	
+			GameObject stepGO = Instantiate(footStep, transform.position, transform.rotation);
+			nextTimeToStep = Time.time + (walkSpeed + stepSpeed) * 0.05f;
+			Destroy(stepGO, 1f);
+		}
 		
 	   if(cancelAxis)
 		{
@@ -152,6 +164,12 @@ public class PlayerControl : MonoBehaviour
 			cldr.height = playerHeight;
 			isCrouched = false;
 		}
+	}
+	
+	
+	void FootStep()
+	{
+		
 	}
 	
 	void GrenadeLogic()

@@ -11,6 +11,7 @@ public class FPCameraScript : MonoBehaviour
 	public GameObject target;
 	PlayerControl plrctl;
 	Rigidbody hprgdb;
+	Light lght;
 	
 	float mDelta;
 	float mHorizontal;
@@ -27,6 +28,7 @@ public class FPCameraScript : MonoBehaviour
        player = this.transform.parent.gameObject;
 	   plrctl = player.GetComponent<PlayerControl>();
 	   hprgdb = target.GetComponent<Rigidbody>();
+	   lght = GetComponent<Light>();
 	   cameraPosY = (plrctl.playerHeight / 2) * plrctl.headOffsetY;
 	   transform.localPosition = new Vector3 (0, cameraPosY, plrctl.headOffsetZ);
     }
@@ -34,6 +36,18 @@ public class FPCameraScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+		bool flashKey = Input.GetButtonUp("Light");
+		if(flashKey)
+		{
+			if(lght.enabled)
+			{
+				lght.enabled = false;
+			}
+			else
+			{
+				lght.enabled = true;
+			}
+		}
 		MouseToRotate();
 		
 		float camCrouchHeight = (plrctl.playerHeight * plrctl.crouchFactor) / 2;
@@ -47,6 +61,8 @@ public class FPCameraScript : MonoBehaviour
 		{
 			transform.localPosition = new Vector3 (0, cameraPosY, plrctl.headOffsetZ);
 		}
+		
+		
     }
 	
 	void FixedUpdate()
